@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Video4Share</string>
+    <string name="title_activity_load">Video4Share</string>
+    <string name="title_activity_load_video">Inicio</string>
+    <string name="title_activity_reproductor">Reproductor</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_share">Compartir</string>
+    <string name="action_open">Abrir</string>
+    <string name="pref_previously_started">previously_started</string>
+</resources>
