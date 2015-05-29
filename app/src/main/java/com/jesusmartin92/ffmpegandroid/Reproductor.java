@@ -65,8 +65,11 @@ public class Reproductor extends ActionBarActivity {
 
 
 
+
     private Comando comando;
     private String fileName;
+
+    private String rutaSistemaFicheros;
     enum Comando{
         ToGIF, ToImage, removeAudio, speedUpVideo , slowDownVideo, cutVideo , toAVI ,toMP4 ,toMOV,toAAC
     };
@@ -80,6 +83,10 @@ public class Reproductor extends ActionBarActivity {
 
         this.selectedVideo = getIntent().getExtras().getParcelable("uri");
         isShowingShareDialog = false;
+
+    //rutaSistemaFicheros = getRealPathFromURI(Uri.fromFile(Environment.getExternalStorageDirectory()));
+
+        rutaSistemaFicheros = Environment.getExternalStorageDirectory().getPath();
 
         dialog = new Dialog(Reproductor.this);
         dialog.setContentView(R.layout.share_custom_dialog);
@@ -173,9 +180,12 @@ public class Reproductor extends ActionBarActivity {
         toGIF.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 comando = Comando.ToGIF;
                 String comandoAEjecutar = getComando(Comando.ToGIF);
                 ejecutaComando(comandoAEjecutar);
+
+
                 Toast.makeText(Reproductor.this, "To gif", Toast.LENGTH_LONG);
             }
         });
@@ -356,30 +366,30 @@ public class Reproductor extends ActionBarActivity {
         switch (comando){
             case ToGIF:
                 fileName = fileName + ".gif";
-                stringCommand = "-y -i " +  filePath + " -vf scale=320:-1 -t 10 -r 10 /sdcard/Video4Share/" + fileName;
+                stringCommand = "-y -i " +  filePath + " -vf scale=320:-1 -t 10 -r 10 " + rutaSistemaFicheros + "/" + fileName;
                 break;
             case ToImage:
                 fileName = fileName +  ".jpeg";
                int milliseconds =  videoView.getCurrentPosition();
                double secondsv = (double) (milliseconds / 1000);
-                stringCommand = "-y -i  " + filePath + " -r 1 -vframes 1 -ss  " +secondsv + " /sdcard/Video4Share/" + fileName ;
+                stringCommand = "-y -i  " + filePath + " -r 1 -vframes 1 -ss  " +secondsv + " "+ rutaSistemaFicheros + "/" + fileName ;
                 break;
 
             case removeAudio:
                 int i = filePath.indexOf(".");
                 fileName = fileName + filePath.substring(i);
-                stringCommand = "-y -i " + filePath + " -an /sdcard/Video4Share/" + fileName;
+                stringCommand = "-y -i " + filePath + " -an " + rutaSistemaFicheros + "/" + fileName;
                 break;
 
             case speedUpVideo:
                 i = filePath.indexOf(".");
                 fileName = fileName + filePath.substring(i);
-                stringCommand = "-y -i " + filePath + " -strict -2  -an -vf setpts=0.125*PTS /sdcard/Video4Share/" + fileName;
+                stringCommand = "-y -i " + filePath + " -strict -2  -an -vf setpts=0.125*PTS " + rutaSistemaFicheros + "/" + fileName;
                 break;
             case slowDownVideo:
                 i = filePath.indexOf(".");
                 fileName = fileName + filePath.substring(i);
-                stringCommand = "-y -i " + filePath + " -strict -2  -an -vf setpts=3.0*PTS /sdcard/Video4Share/" + fileName;
+                stringCommand = "-y -i " + filePath + " -strict -2  -an -vf setpts=3.0*PTS " + rutaSistemaFicheros + "/" + fileName;
                 break;
 
             case cutVideo:
@@ -396,28 +406,28 @@ public class Reproductor extends ActionBarActivity {
                     minduration -= 1;
 
                 }
-                stringCommand = "-y -i " + filePath + " -ss 00:"+startmin+":"+startsec+ " -codec copy -t 00:" + minduration + ":" + secduration +"  /sdcard/Video4Share/" + fileName;
+                stringCommand = "-y -i " + filePath + " -ss 00:"+startmin+":"+startsec+ " -codec copy -t 00:" + minduration + ":" + secduration +"  " + rutaSistemaFicheros + "/" + fileName;
 
                 break;
 
             case toAVI:
                 fileName = fileName + ".avi";
-                stringCommand = "-y -i " +  filePath + "  -qscale 0  -strict -2 /sdcard/Video4Share/" + fileName;
+                stringCommand = "-y -i " +  filePath + "  -qscale 0  -strict -2 " + rutaSistemaFicheros + "/" + fileName;
                 break;
 
             case toMP4:
                 fileName = fileName + ".mp4";
-                stringCommand = "-y -i " +  filePath + "  -qscale 0  -strict -2 /sdcard/Video4Share/" + fileName;
+                stringCommand = "-y -i " +  filePath + "  -qscale 0  -strict -2 " + rutaSistemaFicheros + "/" + fileName;
                 break;
 
             case toMOV:
                 fileName = fileName + ".mov";
-                stringCommand = "-y -i " +  filePath + "  -qscale 0  -strict -2 /sdcard/Video4Share/" + fileName;
+                stringCommand = "-y -i " +  filePath + "  -qscale 0  -strict -2 " + rutaSistemaFicheros + "/" + fileName;
                 break;
 
             case toAAC:
                 fileName = fileName + ".aac";
-                stringCommand = "-y -i " +  filePath + "  -qscale 0  -strict -2 /sdcard/Video4Share/" + fileName;
+                stringCommand = "-y -i " +  filePath + "  -qscale 0  -strict -2 " + rutaSistemaFicheros + "/" + fileName;
                 break;
 
         }
@@ -451,6 +461,7 @@ public class Reproductor extends ActionBarActivity {
             //http://stackoverflow.com/questions/29602770/android-ffmpeg-path-with-spaces
             String []split = path.split("/");
             path = "/sdcard/WhatsApp/Media/WhatsApp Video/" + split[split.length-1];
+            
 
 
         }
@@ -458,7 +469,9 @@ public class Reproductor extends ActionBarActivity {
         return path;
     }
     public void muestraOpciones(){
-        final Uri newVideo = Uri.parse("file://" + "/sdcard/Video4Share/" + fileName);
+        //final Uri newVideo = Uri.parse("file://" + "/sdcard/Video4Share/" + fileName);
+        final Uri newVideo = Uri.parse("file://" + rutaSistemaFicheros + "/" + fileName);
+
 
                 dialogShareButton.setOnClickListener(new OnClickListener() {
                     @Override
